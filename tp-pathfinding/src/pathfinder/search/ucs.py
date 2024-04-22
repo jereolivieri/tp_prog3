@@ -22,15 +22,11 @@ class UniformCostSearch:
         # Initialize the explored dictionary with the position's node
         explored = {node.state: node}
 
-
         # Creo la frontera
         frontier = PriorityQueueFrontier()
         frontier.add(node, node.cost)
 
-
-
         while True:
-
 
             #  Fail if the frontier is empty
             if frontier.is_empty():
@@ -39,14 +35,12 @@ class UniformCostSearch:
             # Explorar el nodo
             node = frontier.pop()
 
-
             # Test Objetivo
             if node.state == grid.end:
                 return Solution(node, explored)
 
             # Explorar estados
             successors = grid.get_neighbours(node.state)
-
 
             for action, postion in successors.items():
                 c_cost = node.cost + grid.get_cost(postion)

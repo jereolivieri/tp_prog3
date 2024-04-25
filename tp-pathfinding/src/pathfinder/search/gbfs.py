@@ -18,10 +18,31 @@ class GreedyBestFirstSearch:
         # Initialize a node with the initial position
         node = Node("", grid.start, 0)
 
+        frontier = PriorityQueueFrontier()
+        frontier.add(node)    
+
         # Initialize the explored dictionary to be empty
-        explored = {} 
+        explored = {node.state:node.cost} 
         
         # Add the node to the explored dictionary
         explored[node.state] = True
         
+        while True:
+            if frontier.is_empty:
+                return NoSolution(explored)
+
+            new_node = frontier.remove()
+
+            if new_node.state==grid.end:
+                return Solution(new_node,explored)
+            
+            successors=grid.get_neighbours(new_node.state)
+
+            for act in successors:
+                estado_nuevo=successors[act]
+
+                
+
+
+
         return NoSolution(explored)

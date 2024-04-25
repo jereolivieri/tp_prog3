@@ -17,11 +17,40 @@ class DepthFirstSearch:
         """
         # Initialize a node with the initial position
         node = Node("", grid.start, 0)
+        
+        if node.state == grid.end:
+            return Solution(node,explored)        
 
-        # Initialize the explored dictionary to be empty
+        frontier=StackFrontier()
+        frontier.add(node)
+
         explored = {} 
-        
-        # Add the node to the explored dictionary
-        explored[node.state] = True
-        
+
+        while True:
+
+            if frontier.is_empty():
+                return NoSolution(explored)
+
+            node=frontier.remove()
+
+            if node.state in explored:
+                continue
+
+            explored[node.state] = True
+
+            successors=grid.get_neighbours(node.state)
+
+            for act in successors:
+                estado_nuevo=successors[act]
+
+                if estado_nuevo==grid.end:
+                    return Solution(new_node,explored)
+
+                if estado_nuevo not in explored:
+                    new_node=Node("", estado_nuevo,
+                                    node.cost + grid.get_cost(estado_nuevo),
+                                    parent=node,action=act)
+
+                    frontier.add(new_node)
+
         return NoSolution(explored)

@@ -43,13 +43,13 @@ class DepthFirstSearch:
             for act in successors:
                 estado_nuevo=successors[act]
 
-                if estado_nuevo==grid.end:
-                    return Solution(new_node,explored)
-
                 if estado_nuevo not in explored:
                     new_node=Node("", estado_nuevo,
                                     node.cost + grid.get_cost(estado_nuevo),
                                     parent=node,action=act)
+                    
+                    if estado_nuevo==grid.end:
+                        return Solution(new_node,explored)
 
                     frontier.add(new_node)
 

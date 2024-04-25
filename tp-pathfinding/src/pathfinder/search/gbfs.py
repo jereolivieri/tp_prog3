@@ -22,10 +22,7 @@ class GreedyBestFirstSearch:
         frontier.add(node)    
 
         # Initialize the explored dictionary to be empty
-        explored = {node.state:node.cost} 
-        
-        # Add the node to the explored dictionary
-        explored[node.state] = True
+        explored = {node.state : node.cost} 
         
         while True:
             if frontier.is_empty:
@@ -41,6 +38,14 @@ class GreedyBestFirstSearch:
             for act in successors:
                 estado_nuevo=successors[act]
 
+                costo_nuevo = new_node.cost + estado_nuevo.cost
+
+                if estado_nuevo not in explored or costo_nuevo < explored[estado_nuevo]:
+                    new_node = Node("", estado_nuevo,
+                                    node.cost + grid.get_cost(estado_nuevo),
+                                    parent=node,action=act)
+                    explored[estado_nuevo]=costo_nuevo
+                    frontier.add(new_node)
                 
 
 

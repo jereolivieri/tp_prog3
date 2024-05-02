@@ -1,8 +1,8 @@
 from ..models.grid import Grid
-from ..models.frontier import StackFrontier
+from ..models.frontier import PriorityQueueFrontier
 from ..models.solution import NoSolution, Solution
 from ..models.node import Node
-from ..models.frontier import PriorityQueueFrontier
+
 
 class UniformCostSearch:
     @staticmethod
@@ -16,46 +16,33 @@ class UniformCostSearch:
             Solution: Solution found
         """
         # Initialize a node with the initial position
-        node = Node("", grid.start, 0)
+        node = Node(value="root", state=grid.start, cost=0)
 
-        # Initialize the explored dictionary to be empty
-        explored = {} 
-        
-        # Add the node to the explored dictionary
-        explored[node.state] = True
-        
-        if node.state == grid.end:
-            return Solution(node,explored)
+        # Initialize the explored dictionary
+        explored = {node.state: node}
 
         frontier = PriorityQueueFrontier()
         frontier.add(node, node.cost)
-        explored = {node.state: node.cost}
 
-
-        while True:
-
-            if frontier.is_empty():
-                return NoSolution(explored)
-
+        while not frontier.is_empty():
             node = frontier.pop()
 
-            successors=grid.get_neighbours(node.state)
-            
-            for act in successors:
-                estado_nuevo=successors[act]
-                
-                costo_nuevo = node.cost + estado_nuevo.cost
+            if node.state == grid.end:
+                return Solution(node, explored)
 
-                if estado_nuevo not in explored or costo_nuevo < explored[estado_nuevo].cost:
-                    new_node = Node("", estado_nuevo,
-                                    node.cost + grid.get_cost(estado_nuevo),
-                                    parent=node,action=act)
+            succesors = grid.get_neighbours(node.state)
 
-                    if estado_nuevo == grid.end:
-                        return Solution(new_node, explored)                    
+            for action, estado_nuevo in succesors.items():
+                new_cost = node.cost + grid.get_cost(estado_nuevo)
 
-                    explored[estado_nuevo]=True
-
-                    frontier.add(new_node.cost, new_node)
+                if estado_nuevo not in explored or new_cost < explored[estado_nuevo].cost:
+                    new_node = Node(
+                        value="",
+                        state=estado_nuevo,
+                        cost=new_cost,
+                        parent=node,
+                        action=action)
+                    frontier.add(new_node, new_node.cost)
+                    explored[new_node.state] = new_node
 
         return NoSolution(explored)

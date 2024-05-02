@@ -16,7 +16,7 @@ class UniformCostSearch:
             Solution: Solution found
         """
         # Initialize a node with the initial position
-        node = Node(value="root", state=grid.start, cost=0)
+        node = Node("", state=grid.start, cost=0)
 
         # Initialize the explored dictionary
         explored = {node.state: node}

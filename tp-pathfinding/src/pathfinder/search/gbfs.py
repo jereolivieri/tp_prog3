@@ -53,12 +53,12 @@ class GreedyBestFirstSearch:
                 costo_nuevo = new_node.cost + grid.get_cost(estado_nuevo)
 
                 if estado_nuevo not in explored or costo_nuevo < explored[estado_nuevo]:
-                    new_node = Node("", estado_nuevo,
+                    new_node_prima = Node("", estado_nuevo,
                                     costo_nuevo,
-                                    parent=node,action=act)
+                                    parent=new_node,action=act)
                     
                     explored[estado_nuevo]=costo_nuevo
 
-                    frontier.add(new_node,manhattan(new_node.state,grid.end))
+                    frontier.add(new_node_prima,manhattan(new_node_prima.state,grid.end))
 
         return NoSolution(explored)

@@ -37,6 +37,7 @@ class LocalSearch:
         self.tour = problem.init
         self.value = problem.obj_val(problem.init)
 
+# Duda: si aplicamos HillClimbing hasta tener estados con costo sólo mayor al del estado actual y luego aplicamos Tabú?
 
 class HillClimbing(LocalSearch):
     """Clase que representa un algoritmo de ascension de colinas.
@@ -67,8 +68,7 @@ class HillClimbing(LocalSearch):
             diff = problem.val_diff(actual)
 
             # Buscar las acciones que generan el mayor incremento de valor obj
-            max_acts = [act for act, val in diff.items() if val ==
-                        max(diff.values())]
+            max_acts = [act for act, val in diff.items() if val == max(diff.values())]
 
             # Elegir una accion aleatoria
             act = choice(max_acts)
@@ -94,10 +94,103 @@ class HillClimbing(LocalSearch):
 class HillClimbingReset(LocalSearch):
     """Algoritmo de ascension de colinas con reinicio aleatorio."""
 
-    # COMPLETAR
+    def solve(self, problem: TSP):
 
+        soluciones={}
+        valores=[]
+
+        n = 10
+
+        for k in range(n):
+
+            # Inicio del reloj
+            start = time()
+
+            # Arrancamos del estado inicial
+            actual = problem.random_reset()
+            value = problem.obj_val(actual)
+
+            while True:
+
+                # Determinar las acciones que se pueden aplicar
+                # y las diferencias en valor objetivo que resultan
+                diff = problem.val_diff(actual)
+
+                # Buscar las acciones que generan el mayor incremento de valor obj
+                max_acts = [act for act, val in diff.items() if val ==
+                            max(diff.values())]
+
+                # Elegir una accion aleatoria
+                act = choice(max_acts)
+
+                # Retornar si estamos en un optimo local 
+                # (diferencia de valor objetivo no positiva)
+                if diff[act] <= 0:
+
+                    self.tour = actual
+                    self.value = value
+                    end = time()
+                    self.time = end-start                    
+
+                    soluciones[k]=problem
+                    valores.append(self.value)
+
+                # Sino, nos movemos al sucesor
+                else:
+
+                    actual = problem.random_reset(actual, act)
+                    value = value + diff[act]
+                    self.niters += 1
+
+        # Hasta ahora lo que hice fue ejecutar n veces el problema, guardar en
+        # un diccionario las soluciones y ahora lo que tengo que buscar es la
+        # solución óptima entre todas esas.
+
+        optimo=min(valores)
+
+        for solucion in soluciones.values():
+            if solucion.value == optimo:
+                return solucion
 
 class Tabu(LocalSearch):
     """Algoritmo de busqueda tabu."""
 
-    # COMPLETAR
+    def solve(self, problem: OptProblem):
+
+        # Inicio del reloj
+        start = time()
+
+        # Arrancamos del estado inicial
+        actual = problem.init
+        value = problem.obj_val(problem.init)
+        tabu=[]
+
+        while self.niters<100:
+
+            # Determinar las acciones que se pueden aplicar
+            # y las diferencias en valor objetivo que resultan
+            diff = problem.val_diff(actual)
+
+            # Buscar las acciones que generan el mayor incremento de valor obj
+            max_acts = [act for act, val in diff.items() if val ==
+                        max(diff.values())]
+
+            # Elegir una accion aleatoria
+            act = choice(max_acts)
+
+            # Retornar si estamos en un optimo local 
+            # (diferencia de valor objetivo no positiva)
+            if diff[act] <= 0:
+
+                self.tour = actual
+                self.value = value
+                end = time()
+                self.time = end-start
+                return
+
+            # Sino, nos movemos al sucesor
+            else:
+
+                actual = problem.result(actual, act)
+                value = value + diff[act]
+                self.niters += 1

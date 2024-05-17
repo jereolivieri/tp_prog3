@@ -51,13 +51,13 @@ class AStarSearch:
                 #actualizamos el costo del camino
                 costo_nuevo = new_node.cost + grid.get_cost(estado_nuevo)
 
-                #ayuda
+                #si el estado nuevo no fue explorado o el costo nuevo es menor, lo definimos como el nuevo nodo
                 if estado_nuevo not in explored or costo_nuevo < explored[estado_nuevo]:
                     new_node_prima = Node("", estado_nuevo,
                                     costo_nuevo,
                                     parent=new_node,action=act)
                     explored[estado_nuevo]=costo_nuevo
-
+                    #si no es solucion agrgamos el nodo a la frontera
                     frontier.add(new_node_prima,new_node_prima + manhattan(new_node_prima.state,grid.end))
 
         #return NoSolution(explored)

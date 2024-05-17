@@ -62,4 +62,4 @@ class DepthFirstSearch:
                     #si no es solucion agrgamos el nodo a la frontera
                     frontier.add(new_node)
 
-        return NoSolution(explored)
+        #return NoSolution(explored)
